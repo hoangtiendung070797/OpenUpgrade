@@ -96,6 +96,20 @@ def delete_web_diagram_assets(cr):
     )
 
 
+def delete_to_website_erponline_cart(cr):
+    # module to_website_erponline_cart that is deleted in odoo-tvtma
+    # to need to delete ir_ui_view in module
+    openupgrade.logged_query(
+        cr,
+        """
+        DELETE FROM ir_ui_view
+        WHERE key = 'to_website_erponline_cart.assets_frontend'
+        OR key = 'to_website_erponline_cart.sale_cart'
+        OR key = 'to_website_erponline_cart.cart';
+        """,
+    )
+
+
 @openupgrade.migrate(use_env=False)
 def migrate(cr, version):
     """
@@ -141,3 +155,4 @@ def migrate(cr, version):
     )
     deduplicate_ir_properties(cr)
     delete_web_diagram_assets(cr)
+    delete_to_website_erponline_cart(cr)
