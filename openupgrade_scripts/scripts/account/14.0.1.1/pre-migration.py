@@ -417,6 +417,17 @@ def fill_account_payment_partner_id(env):
     )
 
 
+def install_new_modules(env):
+    openupgrade.logged_query(
+        env.cr,
+        """
+        UPDATE ir_module_module
+        SET state='to install'
+        WHERE name = 'viin_account_reconciliation' AND state='uninstalled'
+        """,
+    )
+
+
 @openupgrade.migrate()
 def migrate(env, version):
     openupgrade.set_xml_ids_noupdate_value(
@@ -432,6 +443,7 @@ def migrate(env, version):
     fill_empty_partner_type_account_payment(env)
     fill_account_move_line_currency_id(env)
     fill_account_payment_partner_id(env)
+    install_new_modules(env)
     # Disappeared constraint
     openupgrade.logged_query(
         env.cr,
