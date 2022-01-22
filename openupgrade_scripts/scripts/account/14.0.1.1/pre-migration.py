@@ -435,7 +435,7 @@ def _update_reconciliation_date(env):
         ADD COLUMN IF NOT EXISTS reconciliation_date DATE;
         UPDATE account_full_reconcile rec
         SET reconciliation_date = CAST(rec.create_date AS DATE);
-        """
+        """,
     )
     
     openupgrade.logged_query(
