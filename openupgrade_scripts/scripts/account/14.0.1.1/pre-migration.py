@@ -427,6 +427,7 @@ def install_new_modules(env):
         """,
     )
 
+
 def _update_reconciliation_date(env):
     openupgrade.logged_query(
         env.cr,
