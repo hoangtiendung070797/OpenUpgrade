@@ -453,7 +453,7 @@ def _update_reconciliation_date(env):
         SET reconciliation_date = subquery.reconciliation_date
         FROM subquery
         WHERE line.full_reconcile_id = subquery.id;
-        """
+        """,
     )
 
 
