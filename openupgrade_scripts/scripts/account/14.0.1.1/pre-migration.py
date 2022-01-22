@@ -442,7 +442,7 @@ def _update_reconciliation_date(env):
         """
         ALTER TABLE account_move_line
         ADD COLUMN IF NOT EXISTS reconciliation_date DATE;
-        WITH subquery AS ( 
+        WITH subquery AS (
             SELECT rec.id, rec.reconciliation_date
             FROM account_full_reconcile AS rec JOIN account_move_line AS line
             ON line.full_reconcile_id = rec.id
