@@ -437,7 +437,6 @@ def _update_reconciliation_date(env):
         SET reconciliation_date = CAST(rec.create_date AS DATE);
         """,
     )
-    
     openupgrade.logged_query(
         env.cr,
         """
