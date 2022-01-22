@@ -470,8 +470,8 @@ def migrate(env, version):
     fill_empty_partner_type_account_payment(env)
     fill_account_move_line_currency_id(env)
     fill_account_payment_partner_id(env)
-    install_new_modules(env)
     _update_reconciliation_date(env)
+    install_new_modules(env)
     # Disappeared constraint
     openupgrade.logged_query(
         env.cr,
