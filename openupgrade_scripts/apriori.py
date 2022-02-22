@@ -57,6 +57,7 @@ renamed_modules = {
     "to_account_bank_statement_import_rje": "viin_account_bank_statement_import_rje",
     "account_bank_statement_import": "viin_account_bank_statement_import",
     "to_foreign_trade": "viin_foreign_trade",
+    "to_l10n_vn_employee_advance": "viin_l10n_vn_hr_account",
     # Viindoo/erponline-enterprise
     "to_enterprice_marks_account": "to_enterprise_marks_account",
     "to_enterprice_marks_mrp": "to_enterprise_marks_mrp",
