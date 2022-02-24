@@ -114,6 +114,19 @@ def delete_to_website_erponline_cart(cr):
     )
 
 
+def delete_viin_survey_printing_assets(cr):
+    # module viin_survey_printing that is deleted in tvtmaaddons 14.0
+    # to need to delete survey_assets in ir_ui_view
+    # which causes style conflict
+    openupgrade.logged_query(
+        cr,
+        """
+        DELETE FROM ir_ui_view
+        WHERE key = 'viin_survey_printing.survey_assets';
+        """,
+    )
+
+
 @openupgrade.migrate(use_env=False)
 def migrate(cr, version):
     """
@@ -160,3 +173,4 @@ def migrate(cr, version):
     deduplicate_ir_properties(cr)
     delete_web_diagram_assets(cr)
     delete_to_website_erponline_cart(cr)
+    delete_viin_survey_printing_assets(cr)
