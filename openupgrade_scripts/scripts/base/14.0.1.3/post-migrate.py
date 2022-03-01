@@ -3,6 +3,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from openupgradelib import openupgrade
 
+import odoo
+
 
 def install_unmet_dependencies(env):
     """When changing the dependency of module which is not installed on
@@ -71,9 +73,27 @@ def fix_module_category_parent_id(env):
     )
 
 
+def delete_module_not_exist(env):
+    env.cr.execute("SELECT id, name from ir_module_module")
+    module_list = env.cr.dictfetchall()
+    module_delete = []
+    for module in module_list:
+        info = odoo.modules.module.load_information_from_description_file(
+            module["name"]
+        )
+        if info and info["installable"]:
+            continue
+        elif module != "studio_customization":
+            module_delete.append(module["id"])
+    modules = env["ir.module.module"].browse(module_delete)
+    modules.write({"state": "uninstallable"})
+    modules.sudo().unlink()
+
+
 @openupgrade.migrate()
 def migrate(env, version):
     install_unmet_dependencies(env)
     fix_module_category_parent_id(env)
     # Load noupdate changes
     openupgrade.load_data(env.cr, "base", "14.0.1.3/noupdate_changes.xml")
+    delete_module_not_exist(env)
