@@ -75,19 +75,18 @@ def fix_module_category_parent_id(env):
 
 def delete_module_not_exist(env):
     env.cr.execute("SELECT id, name from ir_module_module")
-    module_list = env.cr.dictfetchall()
-    module_delete = []
-    for module in module_list:
+    modules_to_delete = []
+    for module in env.cr.dictfetchall():
         info = odoo.modules.module.load_information_from_description_file(
             module["name"]
         )
         if info and info["installable"]:
             continue
         elif module != "studio_customization":
-            module_delete.append(module["id"])
-    modules = env["ir.module.module"].browse(module_delete)
-    modules.write({"state": "uninstallable"})
-    modules.sudo().unlink()
+            modules_to_delete.append(module["id"])
+    modules_to_delete = env["ir.module.module"].browse(modules_to_delete)
+    modules_to_delete.module_uninstall()
+    modules_to_delete.sudo().unlink()
 
 
 @openupgrade.migrate()
