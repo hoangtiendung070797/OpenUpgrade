@@ -62,9 +62,22 @@ def delete_module_not_exist(env):
     modules_to_delete.sudo().unlink()
 
 
+def access_to_export_feature(env):
+    group_allow_export = env.ref("base.group_allow_export")
+    user_group_id = env["ir.model.data"].xmlid_to_res_id("base.group_user")
+    internal_users = (
+        env["res.users"]
+        .search([])
+        .filtered_domain([("groups_id", "in", [user_group_id])])
+        - group_allow_export.users
+    )
+    group_allow_export.users = [(4, user.id) for user in internal_users]
+
+
 @openupgrade.migrate()
 def migrate(env, version):
     fix_module_category_parent_id(env)
     # Load noupdate changes
     openupgrade.load_data(env.cr, "base", "14.0.1.3/noupdate_changes.xml")
     delete_module_not_exist(env)
+    access_to_export_feature(env)
