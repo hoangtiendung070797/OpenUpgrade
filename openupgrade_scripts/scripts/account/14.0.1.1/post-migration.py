@@ -841,6 +841,22 @@ def _migrate_currency_exchange_account_company(env):
     )
 
 
+def _create_ir_config_parameter_constraint_start_date(env):
+    """
+    Databases that already have issues are not able to fix the issues
+    because it is impossible to reset the items to draft in order to change
+    the date/sequence. Or do anything else, really.
+    By allowing to bypass the constraint before a certain date, users can
+    now edit problematic documents.
+    """
+    env["ir.config_parameter"].create(
+        {
+            "key": "sequence.mixin.constraint_start_date",
+            "value": "3000-01-01",
+        }
+    )
+
+
 @openupgrade.migrate()
 def migrate(env, version):
     fill_account_journal_posted_before(env)
@@ -878,3 +894,4 @@ def migrate(env, version):
         ["email_template_edi_invoice", "mail_template_data_payment_receipt"],
     )
     _migrate_currency_exchange_account_company(env)
+    _create_ir_config_parameter_constraint_start_date(env)
