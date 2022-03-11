@@ -822,6 +822,25 @@ def fill_account_move_line_date(env):
     )
 
 
+def _migrate_currency_exchange_account_company(env):
+    openupgrade.logged_query(
+        env.cr,
+        """
+        UPDATE res_company company
+        SET
+            expense_currency_exchange_account_id = %s,
+            income_currency_exchange_account_id = %s
+        FROM account_journal aj
+        WHERE aj.id = company.currency_exchange_journal_id
+        AND aj.company_id = company.id
+        """
+        % (
+            openupgrade.get_legacy_name("default_debit_account_id"),
+            openupgrade.get_legacy_name("default_credit_account_id"),
+        ),
+    )
+
+
 @openupgrade.migrate()
 def migrate(env, version):
     fill_account_journal_posted_before(env)
@@ -858,3 +877,4 @@ def migrate(env, version):
         "account",
         ["email_template_edi_invoice", "mail_template_data_payment_receipt"],
     )
+    _migrate_currency_exchange_account_company(env)
