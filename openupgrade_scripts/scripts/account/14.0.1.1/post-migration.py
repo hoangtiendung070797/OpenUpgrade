@@ -829,6 +829,7 @@ def _switch_default_account_and_outstanding_account(env):
             FROM account_move_line aml
             JOIN account_journal aj on aml.journal_id = aj.id
             WHERE legacy_statement_unreconcile = TRUE
+            AND aj.type IN ('bank', 'cash')
         )
         UPDATE account_move_line aml
         SET account_id =
@@ -838,6 +839,7 @@ def _switch_default_account_and_outstanding_account(env):
         END
         FROM subquery
         WHERE aml.id = subquery.aml_id
+        AND aml.display_type NOT IN ('line_section', 'line_note')
         """,
     )
 
