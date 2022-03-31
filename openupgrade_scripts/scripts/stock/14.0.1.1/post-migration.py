@@ -3,19 +3,6 @@
 from openupgradelib import openupgrade
 
 
-def propagate_orderpoints_on_moves(env):
-    openupgrade.logged_query(
-        env.cr,
-        """
-        UPDATE stock_move sm
-        SET orderpoint_id = sm2.orderpoint_id
-        FROM stock_move_move_rel rel
-        JOIN stock_move sm2 ON rel.move_dest_id = sm2.id
-        WHERE sm.rule_id IS NOT NULL AND sm.orderpoint_id IS NULL
-            AND rel.move_orig_id = sm.id AND sm2.orderpoint_id IS NOT NULL""",
-    )
-
-
 def merge_priorities(env):
     openupgrade.map_values(
         env.cr,
@@ -54,7 +41,6 @@ def delete_domain_from_view(env):
 
 @openupgrade.migrate()
 def migrate(env, version):
-    propagate_orderpoints_on_moves(env)
     merge_priorities(env)
     delete_domain_from_view(env)
     openupgrade.load_data(env.cr, "stock", "14.0.1.1/noupdate_changes.xml")
