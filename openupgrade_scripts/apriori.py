@@ -66,6 +66,8 @@ renamed_modules = {
     "to_enterprice_marks_mrp": "to_enterprise_marks_mrp",
     "to_hide_ent_modules_website_theme_install": "to_hide_ent_modules_website_theme",
     "to_enterprice_marks_inter_company": "to_enterprise_marks_inter_company",
+    "to_einvoice_summary": "l10n_vn_edi_summary",
+    "to_accounting_vninvoice_summary": "viin_l10n_vn_accounting_vninvoice_summary",
 }
 
 # Merged modules contain a mapping from old module names to other,
