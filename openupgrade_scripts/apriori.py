@@ -52,6 +52,7 @@ merged_modules = {
 # only used here for upgrade_analysis
 renamed_models = {
     # odoo
+    "calendar.contacts": "calendar.filters",
     # OCA/...
 }
 
