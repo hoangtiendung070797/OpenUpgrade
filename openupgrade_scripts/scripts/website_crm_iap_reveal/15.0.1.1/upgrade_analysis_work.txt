@@ -13,7 +13,6 @@ NEW ir.model.access: website_crm_iap_reveal.access_crm_reveal_view_manager
 NEW ir.model.access: website_crm_iap_reveal.access_crm_reveal_view_salesman
 DEL ir.model.access: crm_iap_lead_website.access_crm_reveal_rule
 DEL ir.model.access: crm_iap_lead_website.access_crm_reveal_view
-DEL ir.model.constraint: crm_iap_lead_website.constraint_crm_reveal_rule_limit_extra_contacts
 NEW ir.rule: website_crm_iap_reveal.ir_rule_crm_reveal_rule_all (noupdate)
 NEW ir.rule: website_crm_iap_reveal.ir_rule_crm_reveal_rule_salesman (noupdate)
 NEW ir.rule: website_crm_iap_reveal.ir_rule_crm_reveal_view_all (noupdate)
@@ -44,3 +43,4 @@ DEL ir.ui.view: crm_iap_lead_website.crm_reveal_rule_view_search
 DEL ir.ui.view: crm_iap_lead_website.crm_reveal_view_form
 DEL ir.ui.view: crm_iap_lead_website.crm_reveal_view_tree
 DEL ir.ui.view: crm_iap_lead_website.res_config_settings_view_form
+# NOTHING TO DO: noupdate="0" records, no name changed.

@@ -7,6 +7,7 @@ renamed_modules = {
     # odoo
     "crm_iap_lead": "crm_iap_mine",
     "crm_iap_lead_enrich": "crm_iap_enrich",
+    "crm_iap_lead_website": "website_crm_iap_reveal",
     "l10n_eu_service": "l10n_eu_oss",
     "mail_client_extension": "mail_plugin",
     "payment_ingenico": "payment_ogone",
