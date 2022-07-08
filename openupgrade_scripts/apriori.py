@@ -40,6 +40,7 @@ renamed_modules = {
     "viin_enterprise_marks_website": "viin_hide_ent_modules_websitewebsite",
     "to_l10n_vn_account_asset": "l10n_vn_viin_account_asset",
     "to_l10n_vn_account_asset_sale": "l10n_vn_viin_account_asset_sale",
+    "to_account_reports_l10n_vn": "l10n_vn_viin_account_reports",
 }
 
 # Merged modules contain a mapping from old module names to other,
