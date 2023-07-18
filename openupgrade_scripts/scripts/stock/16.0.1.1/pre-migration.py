@@ -13,16 +13,6 @@ _tables_renames = [
     ("stock_location_route_move", "stock_route_move"),
 ]
 
-_columns_renames = {
-    "stock_move_line": [
-        ("product_qty", "reserved_qty"),
-        ("product_uom_qty", "reserved_uom_qty"),
-    ],
-    "stock_rule": [
-        ("location_id", "location_dest_id"),
-    ],
-}
-
 _fields_renames = [
     ("stock.move.line", "stock_move_line", "product_qty", "reserved_qty"),
     ("stock.move.line", "stock_move_line", "product_uom_qty", "reserved_uom_qty"),
@@ -36,14 +26,14 @@ def _update_stock_quant_storage_category_id(env):
         env.cr,
         """
         ALTER TABLE stock_quant
-        ADD COLUMN IF NOT EXISTS storage_category_id INTEGER
+            ADD COLUMN IF NOT EXISTS storage_category_id INTEGER
         """,
     )
     openupgrade.logged_query(
         env.cr,
         """
         UPDATE stock_quant
-        SET storage_category_id = stock_location.storage_category_id
+            SET storage_category_id = stock_location.storage_category_id
         FROM stock_location
         WHERE stock_quant.location_id = stock_location.id
         """,
@@ -55,19 +45,19 @@ def _update_sol_product_category_name(env):
         env.cr,
         """
         ALTER TABLE stock_move_line
-        ADD COLUMN IF NOT EXISTS product_category_name CHARACTER VARYING
+            ADD COLUMN IF NOT EXISTS product_category_name CHARACTER VARYING
         """,
     )
     openupgrade.logged_query(
         env.cr,
         """
         UPDATE stock_move_line AS sml
-        SET product_category_name = category.complete_name
+            SET product_category_name = category.complete_name
         FROM product_product AS product
         JOIN product_template AS product_tmpl
-        ON product_tmpl.id = product.product_tmpl_id
+            ON product_tmpl.id = product.product_tmpl_id
         JOIN product_category AS category
-        ON category.id = product_tmpl.categ_id
+            ON category.id = product_tmpl.categ_id
         WHERE sml.product_id = product.id
         """,
     )
@@ -78,26 +68,36 @@ def _compute_stock_location_replenish_location(env):
         env.cr,
         """
         ALTER TABLE stock_location
-        ADD COLUMN IF NOT EXISTS replenish_location BOOLEAN
+            ADD COLUMN IF NOT EXISTS replenish_location BOOLEAN
         """,
     )
+
     openupgrade.logged_query(
         env.cr,
         """
-        WITH location_info as (
-            SELECT sl.id as id,
-            CASE
-                WHEN sl.usage = 'internal' AND sl.id = sw.lot_stock_id THEN True
-                ELSE FALSE
-            END as replenish_location_status
-            FROM stock_location sl
-            LEFT JOIN stock_warehouse sw
-            ON sw.id = sl.warehouse_id
-        )
         UPDATE stock_location sl
-        SET replenish_location = info.replenish_location_status
-        FROM location_info info
-        WHERE sl.id = info.id
+            SET replenish_location = False
+        WHERE sl.usage != 'internal'
+        """,
+    )
+
+    openupgrade.logged_query(
+        env.cr,
+        """
+        UPDATE stock_location sl
+            SET replenish_location = True
+        FROM stock_warehouse sw
+        WHERE sl.usage = 'internal' AND sl.id = sw.lot_stock_id
+        """,
+    )
+
+    openupgrade.logged_query(
+        env.cr,
+        """
+        UPDATE stock_location sl
+            SET replenish_location = True
+        FROM stock_warehouse_orderpoint point
+        WHERE sl.id = point.location_id
         """,
     )
 
@@ -107,24 +107,23 @@ def _update_stock_quant_package_pack_date(env):
         env.cr,
         """
         ALTER TABLE stock_quant_package
-        ADD COLUMN IF NOT EXISTS pack_date DATE
+            ADD COLUMN IF NOT EXISTS pack_date DATE
         """,
     )
     openupgrade.logged_query(
         env.cr,
         """
         UPDATE stock_quant_package
-        SET pack_date = DATE(create_date)
+            SET pack_date = DATE(create_date)
         """,
     )
 
 
 @openupgrade.migrate()
 def migrate(env, version):
-    openupgrade.rename_tables(env.cr, _tables_renames)
     openupgrade.rename_models(env.cr, _models_renames)
+    openupgrade.rename_tables(env.cr, _tables_renames)
     openupgrade.rename_fields(env, _fields_renames)
-    openupgrade.rename_columns(env.cr, _columns_renames)
     _update_stock_quant_storage_category_id(env)
     _update_stock_quant_package_pack_date(env)
     _update_sol_product_category_name(env)
